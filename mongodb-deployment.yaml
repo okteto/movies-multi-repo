@@ -79,11 +79,17 @@ spec:
         - containerPort: 27017
           name: mongodb
         env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "root"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: "okteto"
         - name: MONGO_INITDB_DATABASE
           value: "okteto"
         volumeMounts:
         - name: mongodb-storage
           mountPath: /data/db
+        - name: mongodb-init
+          mountPath: /docker-entrypoint-initdb.d
         resources:
           requests:
             memory: "256Mi"
@@ -115,6 +121,10 @@ spec:
           timeoutSeconds: 3
           successThreshold: 1
           failureThreshold: 3
+      volumes:
+      - name: mongodb-init
+        configMap:
+          name: mongodb-init
   volumeClaimTemplates:
   - metadata:
       name: mongodb-storage
