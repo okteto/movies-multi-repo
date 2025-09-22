@@ -3,5 +3,9 @@ dependencies:
   - https://github.com/okteto/movies-api
 
 deploy:
-  - name: Deploy MongoDB
-    command: kubectl apply -f mongodb-deployment.yaml
+  - name: Deploy MongoDB with Official Images
+    command: |
+      helm repo add mongodb https://mongodb.github.io/helm-charts
+      helm repo add groundhog2k https://groundhog2k.github.io/helm-charts
+      helm repo update
+      helm upgrade --install mongodb groundhog2k/mongodb -f mongodb-values.yaml --wait
