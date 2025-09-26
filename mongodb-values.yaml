@@ -1,0 +1,54 @@
+# MongoDB configuration values for cloudpirates/mongodb chart
+# This replaces the docker-compose setup with equivalent Helm chart deployment
+
+image:
+  registry: docker.io
+  repository: mongo
+  tag: "8.0.13@sha256:cf340b1e5283843c63eb12999922f20c463ae31285f746d30f05dcc21cd1d47c"
+
+auth:
+  enabled: true
+  rootUsername: root
+  rootPassword: okteto
+
+persistence:
+  enabled: true
+  storageClass: ""
+  size: 8Gi
+
+# Add environment variables for initializing okteto user
+extraEnv:
+  - name: MONGO_INITDB_DATABASE
+    value: "okteto"
+
+# Custom MongoDB configuration
+config:
+  content: |
+    systemLog:
+      quiet: false
+      verbosity: 0
+    net:
+      bindIpAll: true
+
+# Resource limits matching our needs
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 50m
+    memory: 512Mi
+
+# Health checks
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6

@@ -3,5 +3,8 @@ dependencies:
   - https://github.com/okteto/movies-api
 
 deploy:
-  - name: Deploy MongoDB
-    command:  helm upgrade --install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb -f values.yml --version 13.18.5
+  commands:
+    - helm upgrade --install mongodb oci://registry-1.docker.io/cloudpirates/mongodb --values mongodb-values.yaml --wait --timeout=10m
+    - kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=mongodb --timeout=300s
+    - sleep 10
+    - kubectl exec statefulset/mongodb -- mongosh -u root -p $(kubectl get secret mongodb -o jsonpath='{.data.mongodb-root-password}' | base64 -d) --eval "db = db.getSiblingDB('okteto'); db.createUser({user:'okteto', pwd:'okteto', roles:[{role:'readWrite', db:'okteto'}]}); print('Created okteto user successfully');"
