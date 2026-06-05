@@ -1,6 +1,10 @@
 dependencies:
-  - https://github.com/okteto/movies-frontend
-  - https://github.com/okteto/movies-api
+  movies-frontend:
+    repository: https://github.com/okteto/movies-frontend
+    branch: e2e-tests-gateway
+  movies-api:
+     repository: https://github.com/okteto/movies-api
+     branch: e2e-tests-gateway
 
 deploy:
   commands:
