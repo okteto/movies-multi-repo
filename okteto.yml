@@ -16,7 +16,3 @@ dependencies:
 deploy:
   - name: Expose the Movies app
     command: kubectl apply -f k8s.yml
-  - name: Check the Movies API
-    command: |
-      curl --fail --silent --retry 10 --retry-all-errors -o movies.json https://movies-${OKTETO_NAMESPACE}.${OKTETO_DOMAIN}/api/movies
-      jq -r '.[].original_title' movies.json
